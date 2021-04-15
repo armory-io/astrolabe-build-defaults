@@ -1,0 +1,24 @@
+name: Build
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+      - run: |
+          yarn
+      - run: |
+          yarn test
+      - run: |
+          yarn build && yarn package
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: commit build to dist/
+          branch: main
+          file_pattern: dist/*.js

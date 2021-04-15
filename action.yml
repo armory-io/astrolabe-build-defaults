@@ -1,0 +1,17 @@
+name: Armory Build Defaults
+description: Default Variable Conventions For Armory Builds
+author: Armory
+inputs:
+  artifactory_org:
+    default: "armory"
+  artifactory_docker_repository:
+    default: "docker-local"
+  docker_repository_prefix:
+    default: "armory"
+  red_hat_scan_registry_hostname:
+    default: "scan.connect.redhat.com"
+  red_hat_pid:
+    required: false
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
