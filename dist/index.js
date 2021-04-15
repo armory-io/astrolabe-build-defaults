@@ -79,7 +79,6 @@ const getSanitizedRef = (ref) => {
     }
 };
 const sanitize = (str) => str.replace(/[^0-9a-z]/gi, '');
-// TODO: what to do about timezone is TBD.
 const getCommitDate = () => __awaiter(void 0, void 0, void 0, function* () {
     let commitDateIso = '';
     yield exec_1.exec('git', ['log', '-1', '--date=iso', '--pretty=format:%cd'], {
@@ -90,7 +89,7 @@ const getCommitDate = () => __awaiter(void 0, void 0, void 0, function* () {
         }
     });
     const commitDate = new Date(commitDateIso.trim());
-    return `${commitDate.getFullYear()}.${commitDate.getMonth() + 1}.${commitDate.getDate()}.${commitDate.getHours()}.${commitDate.getMinutes()}.${commitDate.getSeconds()}`;
+    return `${commitDate.getUTCFullYear()}.${commitDate.getUTCMonth() + 1}.${commitDate.getUTCDate()}.${commitDate.getUTCHours()}.${commitDate.getUTCMinutes()}.${commitDate.getUTCSeconds()}`;
 });
 run();
 
