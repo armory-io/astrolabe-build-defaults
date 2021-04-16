@@ -11,7 +11,7 @@ inputs:
   red_hat_scan_registry_hostname:
     default: "scan.connect.redhat.com"
   red_hat_pid:
-    default: ${{ secrets.REDHAT_PID }}
+    required: false
 runs:
   using: 'node12'
   main: 'dist/index.js'

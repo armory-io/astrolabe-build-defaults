@@ -11,7 +11,7 @@ async function run(): Promise<void> {
   const redHatScanRegistryHostname = core.getInput(
     'red_hat_scan_registry_hostname'
   )
-  const redHatPid = core.getInput('red_hat_pid')
+  const redHatPid = core.getInput('red_hat_pid') ?? ''
   const {runId, ref} = context
 
   const sanitizedRef = getSanitizedRef(ref)
