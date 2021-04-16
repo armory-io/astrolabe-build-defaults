@@ -43,6 +43,7 @@ test('generates astrolabe build conventions as outputs', async () => {
   expect(outputs['ubi_scan_image_name']).toEqual(
     `scan.connect.redhat.com/armory_redhat/kayenta:${KAYENTA_COMMIT_TIMESTAMP}.master-ubi`
   )
+  expect(outputs['artifactory_docker_repository']).toEqual('docker-local')
 })
 
 const runner = (testDir: string, env: any): string => {

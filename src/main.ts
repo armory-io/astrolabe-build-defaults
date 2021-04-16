@@ -45,6 +45,7 @@ async function run(): Promise<void> {
     'ubi_scan_image_name',
     `${redHatScanRegistryHostname}/${redHatPid}/${context.repo.repo}:${version}-ubi`
   )
+  core.setOutput('artifactory_docker_repository', artifactoryDockerRepository)
 }
 
 // This is sanitized for Docker image tags.
