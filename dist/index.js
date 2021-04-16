@@ -61,7 +61,7 @@ function run() {
         core.setOutput('build_url', `https://github.com/${github_1.context.repo.owner}/${github_1.context.repo.repo}/actions/runs/${github_1.context.runId}`);
         core.setOutput('image_name', imageName);
         core.setOutput('artifactory_docker_registry_hostname', artifactoryDockerRegistryHostname);
-        core.setOutput('artifactory_url', `${artifactoryOrg}.jfrog.io/artifactory`);
+        core.setOutput('artifactory_url', `https://${artifactoryOrg}.jfrog.io/artifactory`);
         core.setOutput('artifactory_image_name', `${artifactoryDockerRegistryHostname}/${imageName}`);
         core.setOutput('ubi_image_name', `${imageName}-ubi`);
         core.setOutput('ubi_scan_image_name', `${redHatScanRegistryHostname}/${redHatPid}/${github_1.context.repo.repo}:${version}-ubi`);
