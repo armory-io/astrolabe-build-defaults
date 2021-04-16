@@ -40,12 +40,13 @@ const core = __importStar(__webpack_require__(2186));
 const github_1 = __webpack_require__(5438);
 const exec_1 = __webpack_require__(1514);
 function run() {
+    var _a;
     return __awaiter(this, void 0, void 0, function* () {
         const artifactoryOrg = core.getInput('artifactory_org');
         const artifactoryDockerRepository = core.getInput('artifactory_docker_repository');
         const dockerRepositoryPrefix = core.getInput('docker_repository_prefix');
         const redHatScanRegistryHostname = core.getInput('red_hat_scan_registry_hostname');
-        const redHatPid = core.getInput('red_hat_pid');
+        const redHatPid = (_a = core.getInput('red_hat_pid')) !== null && _a !== void 0 ? _a : '';
         const { runId, ref } = github_1.context;
         const sanitizedRef = getSanitizedRef(ref);
         const commitDate = yield getCommitDate();
