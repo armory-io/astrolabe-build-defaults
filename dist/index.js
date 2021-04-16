@@ -63,9 +63,10 @@ function run() {
         core.setOutput('artifactory_docker_registry_hostname', artifactoryDockerRegistryHostname);
         core.setOutput('artifactory_url', `https://${artifactoryOrg}.jfrog.io/artifactory`);
         core.setOutput('artifactory_image_name', `${artifactoryDockerRegistryHostname}/${imageName}`);
+        core.setOutput('artifactory_docker_repository', artifactoryDockerRepository);
         core.setOutput('ubi_image_name', `${imageName}-ubi`);
         core.setOutput('ubi_scan_image_name', `${redHatScanRegistryHostname}/${redHatPid}/${github_1.context.repo.repo}:${version}-ubi`);
-        core.setOutput('artifactory_docker_repository', artifactoryDockerRepository);
+        core.setOutput('red_hat_scan_registry_hostname', redHatScanRegistryHostname);
     });
 }
 // This is sanitized for Docker image tags.
