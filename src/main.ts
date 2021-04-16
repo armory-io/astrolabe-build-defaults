@@ -75,4 +75,4 @@ const getCommitDate = async (): Promise<string> => {
   }.${commitDate.getUTCDate()}.${commitDate.getUTCHours()}.${commitDate.getUTCMinutes()}.${commitDate.getUTCSeconds()}`
 }
 
-run()
+run().catch(e => core.setFailed(e))
