@@ -35,7 +35,7 @@ async function run(): Promise<void> {
     'artifactory_docker_registry_hostname',
     artifactoryDockerRegistryHostname
   )
-  core.setOutput('artifactory_url', `${artifactoryOrg}.jfrog.io/artifactory`)
+  core.setOutput('artifactory_url', `https://${artifactoryOrg}.jfrog.io/artifactory`)
   core.setOutput(
     'artifactory_image_name',
     `${artifactoryDockerRegistryHostname}/${imageName}`

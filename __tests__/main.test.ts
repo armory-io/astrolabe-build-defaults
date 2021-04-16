@@ -33,7 +33,7 @@ test('generates astrolabe build conventions as outputs', async () => {
   expect(outputs['artifactory_docker_registry_hostname']).toEqual(
     'armory-docker-local.jfrog.io'
   )
-  expect(outputs['artifactory_url']).toEqual('armory.jfrog.io/artifactory')
+  expect(outputs['artifactory_url']).toEqual('https://armory.jfrog.io/artifactory')
   expect(outputs['artifactory_image_name']).toEqual(
     `armory-docker-local.jfrog.io/armory/kayenta:${KAYENTA_COMMIT_TIMESTAMP}.master`
   )
