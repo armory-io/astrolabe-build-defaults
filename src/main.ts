@@ -40,12 +40,14 @@ async function run(): Promise<void> {
     'artifactory_image_name',
     `${artifactoryDockerRegistryHostname}/${imageName}`
   )
+  core.setOutput('artifactory_docker_repository', artifactoryDockerRepository)
+
   core.setOutput('ubi_image_name', `${imageName}-ubi`)
   core.setOutput(
     'ubi_scan_image_name',
     `${redHatScanRegistryHostname}/${redHatPid}/${context.repo.repo}:${version}-ubi`
   )
-  core.setOutput('artifactory_docker_repository', artifactoryDockerRepository)
+  core.setOutput('red_hat_scan_registry_hostname', redHatScanRegistryHostname)
 }
 
 // This is sanitized for Docker image tags.

@@ -33,17 +33,20 @@ test('generates astrolabe build conventions as outputs', async () => {
   expect(outputs['artifactory_docker_registry_hostname']).toEqual(
     'armory-docker-local.jfrog.io'
   )
-  expect(outputs['artifactory_url']).toEqual('https://armory.jfrog.io/artifactory')
+  expect(outputs['artifactory_url']).toEqual(
+    'https://armory.jfrog.io/artifactory'
+  )
   expect(outputs['artifactory_image_name']).toEqual(
     `armory-docker-local.jfrog.io/armory/kayenta:${KAYENTA_COMMIT_TIMESTAMP}.master`
   )
+  expect(outputs['artifactory_docker_repository']).toEqual('docker-local')
   expect(outputs['ubi_image_name']).toEqual(
     `armory/kayenta:${KAYENTA_COMMIT_TIMESTAMP}.master-ubi`
   )
   expect(outputs['ubi_scan_image_name']).toEqual(
     `scan.connect.redhat.com/armory_redhat/kayenta:${KAYENTA_COMMIT_TIMESTAMP}.master-ubi`
   )
-  expect(outputs['artifactory_docker_repository']).toEqual('docker-local')
+  expect(outputs['red_hat_scan_registry_hostname']).toEqual('scan.connect.redhat.com')
 })
 
 const runner = (testDir: string, env: any): string => {
