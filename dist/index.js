@@ -92,7 +92,7 @@ const getCommitDate = () => __awaiter(void 0, void 0, void 0, function* () {
         }
     });
     const commitDate = new Date(commitDateIso.trim());
-    return `${commitDate.getUTCFullYear()}.${commitDate.getUTCMonth() + 1}.${commitDate.getUTCDate()}.${commitDate.getUTCHours()}.${commitDate.getUTCMinutes()}.${commitDate.getUTCSeconds()}`;
+    return `${commitDate.getUTCFullYear()}.${(commitDate.getUTCMonth() + 1).toString().padStart(2, '0')}.${commitDate.getUTCDate().toString().padStart(2, '0')}.${commitDate.getUTCHours().toString().padStart(2, '0')}.${commitDate.getUTCMinutes().toString().padStart(2, '0')}.${commitDate.getUTCSeconds().toString().padStart(2, '0')}`;
 });
 run().catch(e => core.setFailed(e));
 
