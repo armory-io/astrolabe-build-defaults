@@ -1,6 +1,3 @@
-import * as core from '@actions/core'
-import {context} from '@actions/github'
-
 export interface Inputs {
   artifactoryOrg: string
   artifactoryDockerRepository: string
@@ -10,6 +7,7 @@ export interface Inputs {
 
   runId: number
   ref: string
+  sha: string
 
   org: string
   repo: string
@@ -38,18 +36,23 @@ export const generateVariables = async (
     redHatScanRegistryHostname,
     redHatPid,
     runId,
-    ref
+    ref,
+    sha,
+    org,
+    repo,
+    buildOrg,
+    buildRepo,
   } = inputs
 
   const outputs: {[key: string]: string} = {}
 
   const artifactoryDockerRegistryHostname = `${artifactoryOrg}-${artifactoryDockerRepository}.jfrog.io`
 
-  outputs['org'] = context.repo.owner
-  outputs['repo'] = context.repo.repo
-  outputs['build_number'] = `${context.sha}:${context.runId}`
-  outputs['build_name'] = `${context.repo.owner}:${context.repo.repo}`
-  outputs[ 'build_url'] = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`
+  outputs['org'] = org,
+  outputs['repo'] = repo,
+  outputs['build_number'] = `${sha}:${runId}`
+  outputs['build_name'] = `${org}:${repo}`
+  outputs['build_url'] = `https://github.com/${buildOrg}/${buildRepo}/actions/runs/${runId}`
   outputs['artifactory_docker_registry_hostname'] = artifactoryDockerRegistryHostname
   outputs['artifactory_url'] = `https://${artifactoryOrg}.jfrog.io/artifactory`
   outputs['artifactory_docker_repository'] = artifactoryDockerRepository
@@ -66,13 +69,13 @@ export const generateVariables = async (
 
   const sanitizedRef = getSanitizedRef(ref)
   const version = `${versionTimestamp}.${sanitizedRef}`
-  const imageName = `${dockerRepositoryPrefix}/${context.repo.repo}:${version}`
+  const imageName = `${dockerRepositoryPrefix}/${repo}:${version}`
 
   outputs['version'] = version
   outputs['image_name'] = imageName
   outputs['artifactory_image_name'] = `${artifactoryDockerRegistryHostname}/${imageName}`
   outputs['ubi_image_name'] = `${imageName}-ubi`
-  outputs['ubi_scan_image_name'] = `${redHatScanRegistryHostname}/${redHatPid}/${context.repo.repo}:${version}-ubi`
+  outputs['ubi_scan_image_name'] = `${redHatScanRegistryHostname}/${redHatPid}/${repo}:${version}-ubi`
 
   return outputs
 }

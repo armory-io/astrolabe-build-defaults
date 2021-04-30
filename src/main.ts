@@ -12,8 +12,9 @@ async function run(): Promise<void> {
     redHatPid: core.getInput('red_hat_pid') ?? '',
     runId: context.runId,
     ref: context.ref,
-    org: core.getInput('org') ?? context.repo.owner,
-    repo: core.getInput('repo') ?? context.repo.repo,
+    sha: context.sha,
+    org: core.getInput('org') || context.repo.owner,
+    repo: core.getInput('repo') || context.repo.repo,
     buildOrg: context.repo.owner,
     buildRepo: context.repo.repo
   }
