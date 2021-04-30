@@ -39,48 +39,97 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__webpack_require__(2186));
 const github_1 = __webpack_require__(5438);
 const exec_1 = __webpack_require__(1514);
+const variables_1 = __webpack_require__(6096);
 function run() {
-    var _a;
+    var _a, _b, _c;
     return __awaiter(this, void 0, void 0, function* () {
-        const artifactoryOrg = core.getInput('artifactory_org');
-        const artifactoryDockerRepository = core.getInput('artifactory_docker_repository');
-        const dockerRepositoryPrefix = core.getInput('docker_repository_prefix');
-        const redHatScanRegistryHostname = core.getInput('red_hat_scan_registry_hostname');
-        const redHatPid = (_a = core.getInput('red_hat_pid')) !== null && _a !== void 0 ? _a : '';
-        const { runId, ref } = github_1.context;
-        const sanitizedRef = getSanitizedRef(ref);
-        const artifactoryDockerRegistryHostname = `${artifactoryOrg}-${artifactoryDockerRepository}.jfrog.io`;
-        core.setOutput('org', github_1.context.repo.owner);
-        core.setOutput('repo', github_1.context.repo.repo);
-        core.setOutput('build_number', `${github_1.context.sha}:${github_1.context.runId}`);
-        core.setOutput('build_name', `${github_1.context.repo.owner}:${github_1.context.repo.repo}`);
-        core.setOutput('build_url', `https://github.com/${github_1.context.repo.owner}/${github_1.context.repo.repo}/actions/runs/${github_1.context.runId}`);
-        core.setOutput('artifactory_docker_registry_hostname', artifactoryDockerRegistryHostname);
-        core.setOutput('artifactory_url', `https://${artifactoryOrg}.jfrog.io/artifactory`);
-        core.setOutput('artifactory_docker_repository', artifactoryDockerRepository);
-        core.setOutput('red_hat_scan_registry_hostname', redHatScanRegistryHostname);
-        // There are some cases where the version is supplied by Astrolabe, rather than inferring from
-        // the git repo.
-        const commitDate = yield (() => __awaiter(this, void 0, void 0, function* () {
-            try {
-                return yield getCommitDate();
-            }
-            catch (_b) {
-                return null;
-            }
-        }))();
-        if (!commitDate) {
-            return;
-        }
-        const version = `${commitDate}.${sanitizedRef}`;
-        const imageName = `${dockerRepositoryPrefix}/${github_1.context.repo.repo}:${version}`;
-        core.setOutput('version', version);
-        core.setOutput('image_name', imageName);
-        core.setOutput('artifactory_image_name', `${artifactoryDockerRegistryHostname}/${imageName}`);
-        core.setOutput('ubi_image_name', `${imageName}-ubi`);
-        core.setOutput('ubi_scan_image_name', `${redHatScanRegistryHostname}/${redHatPid}/${github_1.context.repo.repo}:${version}-ubi`);
+        const inputs = {
+            artifactoryOrg: core.getInput('artifactory_org'),
+            artifactoryDockerRepository: core.getInput('artifactory_docker_repository'),
+            dockerRepositoryPrefix: core.getInput('docker_repository_prefix'),
+            redHatScanRegistryHostname: core.getInput('red_hat_scan_registry_hostname'),
+            redHatPid: (_a = core.getInput('red_hat_pid')) !== null && _a !== void 0 ? _a : '',
+            runId: github_1.context.runId,
+            ref: github_1.context.ref,
+            org: (_b = core.getInput('org')) !== null && _b !== void 0 ? _b : github_1.context.repo.owner,
+            repo: (_c = core.getInput('repo')) !== null && _c !== void 0 ? _c : github_1.context.repo.repo,
+            buildOrg: github_1.context.repo.owner,
+            buildRepo: github_1.context.repo.repo
+        };
+        const outputs = yield variables_1.generateVariables(inputs, {
+            resolve: getCommitDate
+        });
+        Object.entries(outputs).forEach(([key, value]) => {
+            core.setOutput(key, value);
+        });
     });
 }
+const getCommitDate = () => __awaiter(void 0, void 0, void 0, function* () {
+    let commitDateIso = '';
+    yield exec_1.exec('git', ['log', '-1', '--date=iso', '--pretty=format:%cd'], {
+        listeners: {
+            stdout: data => {
+                commitDateIso += data.toString();
+            }
+        }
+    });
+    return commitDateIso.trim();
+});
+run().catch(e => core.setFailed(e));
+
+
+/***/ }),
+
+/***/ 6096:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.generateVariables = void 0;
+const github_1 = __webpack_require__(5438);
+const generateVariables = (inputs, resolver) => __awaiter(void 0, void 0, void 0, function* () {
+    const { artifactoryOrg, artifactoryDockerRepository, dockerRepositoryPrefix, redHatScanRegistryHostname, redHatPid, runId, ref } = inputs;
+    const outputs = {};
+    const artifactoryDockerRegistryHostname = `${artifactoryOrg}-${artifactoryDockerRepository}.jfrog.io`;
+    outputs['org'] = github_1.context.repo.owner;
+    outputs['repo'] = github_1.context.repo.repo;
+    outputs['build_number'] = `${github_1.context.sha}:${github_1.context.runId}`;
+    outputs['build_name'] = `${github_1.context.repo.owner}:${github_1.context.repo.repo}`;
+    outputs['build_url'] = `https://github.com/${github_1.context.repo.owner}/${github_1.context.repo.repo}/actions/runs/${github_1.context.runId}`;
+    outputs['artifactory_docker_registry_hostname'] = artifactoryDockerRegistryHostname;
+    outputs['artifactory_url'] = `https://${artifactoryOrg}.jfrog.io/artifactory`;
+    outputs['artifactory_docker_repository'] = artifactoryDockerRepository;
+    outputs['red_hat_scan_registry_hostname'] = redHatScanRegistryHostname;
+    // There are some cases where the version is supplied by Astrolabe, rather than inferring from
+    // the git repo.
+    let versionTimestamp;
+    try {
+        versionTimestamp = convertIso(yield resolver.resolve());
+    }
+    catch (_a) {
+        return outputs;
+    }
+    const sanitizedRef = getSanitizedRef(ref);
+    const version = `${versionTimestamp}.${sanitizedRef}`;
+    const imageName = `${dockerRepositoryPrefix}/${github_1.context.repo.repo}:${version}`;
+    outputs['version'] = version;
+    outputs['image_name'] = imageName;
+    outputs['artifactory_image_name'] = `${artifactoryDockerRegistryHostname}/${imageName}`;
+    outputs['ubi_image_name'] = `${imageName}-ubi`;
+    outputs['ubi_scan_image_name'] = `${redHatScanRegistryHostname}/${redHatPid}/${github_1.context.repo.repo}:${version}-ubi`;
+    return outputs;
+});
+exports.generateVariables = generateVariables;
 // This is sanitized for Docker image tags.
 const getSanitizedRef = (ref) => {
     if (ref.startsWith('refs/heads/')) {
@@ -94,19 +143,24 @@ const getSanitizedRef = (ref) => {
     }
 };
 const sanitize = (str) => str.replace(/[^0-9a-z]/gi, '');
-const getCommitDate = () => __awaiter(void 0, void 0, void 0, function* () {
-    let commitDateIso = '';
-    yield exec_1.exec('git', ['log', '-1', '--date=iso', '--pretty=format:%cd'], {
-        listeners: {
-            stdout: data => {
-                commitDateIso += data.toString();
-            }
-        }
-    });
-    const commitDate = new Date(commitDateIso.trim());
-    return `${commitDate.getUTCFullYear()}.${(commitDate.getUTCMonth() + 1).toString().padStart(2, '0')}.${commitDate.getUTCDate().toString().padStart(2, '0')}.${commitDate.getUTCHours().toString().padStart(2, '0')}.${commitDate.getUTCMinutes().toString().padStart(2, '0')}.${commitDate.getUTCSeconds().toString().padStart(2, '0')}`;
-});
-run().catch(e => core.setFailed(e));
+const convertIso = (iso) => {
+    const date = new Date(iso);
+    return `${date.getUTCFullYear()}.${(date.getUTCMonth() + 1)
+        .toString()
+        .padStart(2, '0')}.${date
+        .getUTCDate()
+        .toString()
+        .padStart(2, '0')}.${date
+        .getUTCHours()
+        .toString()
+        .padStart(2, '0')}.${date
+        .getUTCMinutes()
+        .toString()
+        .padStart(2, '0')}.${date
+        .getUTCSeconds()
+        .toString()
+        .padStart(2, '0')}`;
+};
 
 
 /***/ }),
