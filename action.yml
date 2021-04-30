@@ -2,6 +2,10 @@ name: Armory Build Defaults
 description: Default Variable Conventions For Armory Builds
 author: Armory
 inputs:
+  org: string
+    required: false
+  repo: string
+    required: false
   artifactory_org:
     default: "armory"
   artifactory_docker_repository:
