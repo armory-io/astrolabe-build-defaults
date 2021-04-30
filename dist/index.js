@@ -49,24 +49,36 @@ function run() {
         const redHatPid = (_a = core.getInput('red_hat_pid')) !== null && _a !== void 0 ? _a : '';
         const { runId, ref } = github_1.context;
         const sanitizedRef = getSanitizedRef(ref);
-        const commitDate = yield getCommitDate();
-        const version = `${commitDate}.${sanitizedRef}`;
-        const imageName = `${dockerRepositoryPrefix}/${github_1.context.repo.repo}:${version}`;
         const artifactoryDockerRegistryHostname = `${artifactoryOrg}-${artifactoryDockerRepository}.jfrog.io`;
-        core.setOutput('version', version);
         core.setOutput('org', github_1.context.repo.owner);
         core.setOutput('repo', github_1.context.repo.repo);
         core.setOutput('build_number', `${github_1.context.sha}:${github_1.context.runId}`);
         core.setOutput('build_name', `${github_1.context.repo.owner}:${github_1.context.repo.repo}`);
         core.setOutput('build_url', `https://github.com/${github_1.context.repo.owner}/${github_1.context.repo.repo}/actions/runs/${github_1.context.runId}`);
-        core.setOutput('image_name', imageName);
         core.setOutput('artifactory_docker_registry_hostname', artifactoryDockerRegistryHostname);
         core.setOutput('artifactory_url', `https://${artifactoryOrg}.jfrog.io/artifactory`);
-        core.setOutput('artifactory_image_name', `${artifactoryDockerRegistryHostname}/${imageName}`);
         core.setOutput('artifactory_docker_repository', artifactoryDockerRepository);
+        core.setOutput('red_hat_scan_registry_hostname', redHatScanRegistryHostname);
+        // There are some cases where the version is supplied by Astrolabe, rather than inferring from
+        // the git repo.
+        const commitDate = yield (() => __awaiter(this, void 0, void 0, function* () {
+            try {
+                return yield getCommitDate();
+            }
+            catch (_b) {
+                return null;
+            }
+        }))();
+        if (!commitDate) {
+            return;
+        }
+        const version = `${commitDate}.${sanitizedRef}`;
+        const imageName = `${dockerRepositoryPrefix}/${github_1.context.repo.repo}:${version}`;
+        core.setOutput('version', version);
+        core.setOutput('image_name', imageName);
+        core.setOutput('artifactory_image_name', `${artifactoryDockerRegistryHostname}/${imageName}`);
         core.setOutput('ubi_image_name', `${imageName}-ubi`);
         core.setOutput('ubi_scan_image_name', `${redHatScanRegistryHostname}/${redHatPid}/${github_1.context.repo.repo}:${version}-ubi`);
-        core.setOutput('red_hat_scan_registry_hostname', redHatScanRegistryHostname);
     });
 }
 // This is sanitized for Docker image tags.
