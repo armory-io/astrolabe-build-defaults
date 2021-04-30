@@ -15,13 +15,9 @@ async function run(): Promise<void> {
   const {runId, ref} = context
 
   const sanitizedRef = getSanitizedRef(ref)
-  const commitDate = await getCommitDate()
 
-  const version = `${commitDate}.${sanitizedRef}`
-  const imageName = `${dockerRepositoryPrefix}/${context.repo.repo}:${version}`
   const artifactoryDockerRegistryHostname = `${artifactoryOrg}-${artifactoryDockerRepository}.jfrog.io`
 
-  core.setOutput('version', version)
   core.setOutput('org', context.repo.owner)
   core.setOutput('repo', context.repo.repo)
   core.setOutput('build_number', `${context.sha}:${context.runId}`)
@@ -30,24 +26,45 @@ async function run(): Promise<void> {
     'build_url',
     `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`
   )
-  core.setOutput('image_name', imageName)
   core.setOutput(
     'artifactory_docker_registry_hostname',
     artifactoryDockerRegistryHostname
   )
-  core.setOutput('artifactory_url', `https://${artifactoryOrg}.jfrog.io/artifactory`)
+  core.setOutput(
+    'artifactory_url',
+    `https://${artifactoryOrg}.jfrog.io/artifactory`
+  )
+  core.setOutput('artifactory_docker_repository', artifactoryDockerRepository)
+
+  core.setOutput('red_hat_scan_registry_hostname', redHatScanRegistryHostname)
+
+  // There are some cases where the version is supplied by Astrolabe, rather than inferring from
+  // the git repo.
+  const commitDate = await (async () => {
+    try {
+      return await getCommitDate()
+    } catch {
+      return null
+    }
+  })()
+
+  if (!commitDate) {
+    return
+  }
+
+  const version = `${commitDate}.${sanitizedRef}`
+  const imageName = `${dockerRepositoryPrefix}/${context.repo.repo}:${version}`
+  core.setOutput('version', version)
+  core.setOutput('image_name', imageName)
   core.setOutput(
     'artifactory_image_name',
     `${artifactoryDockerRegistryHostname}/${imageName}`
   )
-  core.setOutput('artifactory_docker_repository', artifactoryDockerRepository)
-
   core.setOutput('ubi_image_name', `${imageName}-ubi`)
   core.setOutput(
     'ubi_scan_image_name',
     `${redHatScanRegistryHostname}/${redHatPid}/${context.repo.repo}:${version}-ubi`
   )
-  core.setOutput('red_hat_scan_registry_hostname', redHatScanRegistryHostname)
 }
 
 // This is sanitized for Docker image tags.
