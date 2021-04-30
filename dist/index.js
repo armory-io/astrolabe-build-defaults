@@ -41,7 +41,7 @@ const github_1 = __webpack_require__(5438);
 const exec_1 = __webpack_require__(1514);
 const variables_1 = __webpack_require__(6096);
 function run() {
-    var _a, _b, _c;
+    var _a;
     return __awaiter(this, void 0, void 0, function* () {
         const inputs = {
             artifactoryOrg: core.getInput('artifactory_org'),
@@ -51,8 +51,9 @@ function run() {
             redHatPid: (_a = core.getInput('red_hat_pid')) !== null && _a !== void 0 ? _a : '',
             runId: github_1.context.runId,
             ref: github_1.context.ref,
-            org: (_b = core.getInput('org')) !== null && _b !== void 0 ? _b : github_1.context.repo.owner,
-            repo: (_c = core.getInput('repo')) !== null && _c !== void 0 ? _c : github_1.context.repo.repo,
+            sha: github_1.context.sha,
+            org: core.getInput('org') || github_1.context.repo.owner,
+            repo: core.getInput('repo') || github_1.context.repo.repo,
             buildOrg: github_1.context.repo.owner,
             buildRepo: github_1.context.repo.repo
         };
@@ -81,7 +82,7 @@ run().catch(e => core.setFailed(e));
 /***/ }),
 
 /***/ 6096:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
 
@@ -96,16 +97,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.generateVariables = void 0;
-const github_1 = __webpack_require__(5438);
 const generateVariables = (inputs, resolver) => __awaiter(void 0, void 0, void 0, function* () {
-    const { artifactoryOrg, artifactoryDockerRepository, dockerRepositoryPrefix, redHatScanRegistryHostname, redHatPid, runId, ref } = inputs;
+    const { artifactoryOrg, artifactoryDockerRepository, dockerRepositoryPrefix, redHatScanRegistryHostname, redHatPid, runId, ref, sha, org, repo, buildOrg, buildRepo, } = inputs;
     const outputs = {};
     const artifactoryDockerRegistryHostname = `${artifactoryOrg}-${artifactoryDockerRepository}.jfrog.io`;
-    outputs['org'] = github_1.context.repo.owner;
-    outputs['repo'] = github_1.context.repo.repo;
-    outputs['build_number'] = `${github_1.context.sha}:${github_1.context.runId}`;
-    outputs['build_name'] = `${github_1.context.repo.owner}:${github_1.context.repo.repo}`;
-    outputs['build_url'] = `https://github.com/${github_1.context.repo.owner}/${github_1.context.repo.repo}/actions/runs/${github_1.context.runId}`;
+    outputs['org'] = org,
+        outputs['repo'] = repo,
+        outputs['build_number'] = `${sha}:${runId}`;
+    outputs['build_name'] = `${org}:${repo}`;
+    outputs['build_url'] = `https://github.com/${buildOrg}/${buildRepo}/actions/runs/${runId}`;
     outputs['artifactory_docker_registry_hostname'] = artifactoryDockerRegistryHostname;
     outputs['artifactory_url'] = `https://${artifactoryOrg}.jfrog.io/artifactory`;
     outputs['artifactory_docker_repository'] = artifactoryDockerRepository;
@@ -121,12 +121,12 @@ const generateVariables = (inputs, resolver) => __awaiter(void 0, void 0, void 0
     }
     const sanitizedRef = getSanitizedRef(ref);
     const version = `${versionTimestamp}.${sanitizedRef}`;
-    const imageName = `${dockerRepositoryPrefix}/${github_1.context.repo.repo}:${version}`;
+    const imageName = `${dockerRepositoryPrefix}/${repo}:${version}`;
     outputs['version'] = version;
     outputs['image_name'] = imageName;
     outputs['artifactory_image_name'] = `${artifactoryDockerRegistryHostname}/${imageName}`;
     outputs['ubi_image_name'] = `${imageName}-ubi`;
-    outputs['ubi_scan_image_name'] = `${redHatScanRegistryHostname}/${redHatPid}/${github_1.context.repo.repo}:${version}-ubi`;
+    outputs['ubi_scan_image_name'] = `${redHatScanRegistryHostname}/${redHatPid}/${repo}:${version}-ubi`;
     return outputs;
 });
 exports.generateVariables = generateVariables;
