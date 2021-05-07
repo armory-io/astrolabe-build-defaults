@@ -91,7 +91,7 @@ const getSanitizedRef = (ref: string): string => {
   }
 }
 
-const sanitize = (str: string) => str.replace(/[^0-9a-z]/gi, '')
+const sanitize = (str: string) => str.replace(/[^0-9a-z\-\.]/gi, '')
 
 const convertIso = (iso: string): string =>  {
   const date = new Date(iso)
