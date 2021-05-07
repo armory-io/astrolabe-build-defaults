@@ -142,7 +142,7 @@ const getSanitizedRef = (ref) => {
         throw new Error(`Invalid git ref: ${ref}`);
     }
 };
-const sanitize = (str) => str.replace(/[^0-9a-z]/gi, '');
+const sanitize = (str) => str.replace(/[^0-9a-z\-\.]/gi, '');
 const convertIso = (iso) => {
     const date = new Date(iso);
     return `${date.getUTCFullYear()}.${(date.getUTCMonth() + 1)
