@@ -6,6 +6,8 @@ inputs:
     required: false
   repo:
     required: false
+  ref:
+    required: false
   artifactory_org:
     default: "armory"
   artifactory_docker_repository:

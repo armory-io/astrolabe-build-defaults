@@ -51,7 +51,7 @@ function run() {
             redHatPid: (_a = core.getInput('red_hat_pid')) !== null && _a !== void 0 ? _a : '',
             runId: github_1.context.runId,
             ref: github_1.context.ref,
-            sha: github_1.context.sha,
+            sha: core.getInput('ref') || github_1.context.sha,
             org: core.getInput('org') || github_1.context.repo.owner,
             repo: core.getInput('repo') || github_1.context.repo.repo,
             buildOrg: github_1.context.repo.owner,
