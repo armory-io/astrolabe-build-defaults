@@ -76,6 +76,7 @@ export const generateVariables = async (
   outputs['artifactory_image_name'] = `${artifactoryDockerRegistryHostname}/${imageName}`
   outputs['ubi_image_name'] = `${imageName}-ubi`
   outputs['ubi_scan_image_name'] = `${redHatScanRegistryHostname}/${redHatPid}/${repo}:${version}-ubi`
+  outputs['version_as_metadata'] = version.split('.').join('')
 
   return outputs
 }
