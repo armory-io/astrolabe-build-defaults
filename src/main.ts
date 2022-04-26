@@ -23,6 +23,7 @@ async function run(): Promise<void> {
     resolve: getCommitDate
   })
 
+  // eslint-disable-next-line github/array-foreach
   Object.entries(outputs).forEach(([key, value]) => {
     core.setOutput(key, value)
   })
@@ -40,4 +41,5 @@ const getCommitDate = async (): Promise<string> => {
   return commitDateIso.trim()
 }
 
+// eslint-disable-next-line github/no-then
 run().catch(e => core.setFailed(e))

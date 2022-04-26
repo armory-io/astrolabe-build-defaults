@@ -28,7 +28,7 @@ export interface TimestampResolver {
 export const generateVariables = async (
   inputs: Inputs,
   resolver: TimestampResolver
-): Promise<{ [key: string]: string }> => {
+): Promise<{[key: string]: string}> => {
   const {
     artifactoryOrg,
     artifactoryDockerRepository,
@@ -41,26 +41,30 @@ export const generateVariables = async (
     org,
     repo,
     buildOrg,
-    buildRepo,
+    buildRepo
   } = inputs
 
   const outputs: {[key: string]: string} = {}
 
   const artifactoryDockerRegistryHostname = `${artifactoryOrg}-${artifactoryDockerRepository}.jfrog.io`
 
-  outputs['org'] = org,
-  outputs['repo'] = repo,
-  outputs['build_number'] = `${sha}:${runId}`
+  ;(outputs['org'] = org),
+    (outputs['repo'] = repo),
+    (outputs['build_number'] = `${sha}:${runId}`)
   outputs['build_name'] = `${org}:${repo}`
-  outputs['build_url'] = `https://github.com/${buildOrg}/${buildRepo}/actions/runs/${runId}`
-  outputs['artifactory_docker_registry_hostname'] = artifactoryDockerRegistryHostname
+  outputs[
+    'build_url'
+  ] = `https://github.com/${buildOrg}/${buildRepo}/actions/runs/${runId}`
+  outputs[
+    'artifactory_docker_registry_hostname'
+  ] = artifactoryDockerRegistryHostname
   outputs['artifactory_url'] = `https://${artifactoryOrg}.jfrog.io/artifactory`
   outputs['artifactory_docker_repository'] = artifactoryDockerRepository
   outputs['red_hat_scan_registry_hostname'] = redHatScanRegistryHostname
 
   // There are some cases where the version is supplied by Astrolabe, rather than inferring from
   // the git repo.
-  let versionTimestamp;
+  let versionTimestamp
   try {
     versionTimestamp = convertIso(await resolver.resolve())
   } catch {
@@ -73,9 +77,13 @@ export const generateVariables = async (
 
   outputs['version'] = version
   outputs['image_name'] = imageName
-  outputs['artifactory_image_name'] = `${artifactoryDockerRegistryHostname}/${imageName}`
+  outputs[
+    'artifactory_image_name'
+  ] = `${artifactoryDockerRegistryHostname}/${imageName}`
   outputs['ubi_image_name'] = `${imageName}-ubi`
-  outputs['ubi_scan_image_name'] = `${redHatScanRegistryHostname}/${redHatPid}/${repo}:${version}-ubi`
+  outputs[
+    'ubi_scan_image_name'
+  ] = `${redHatScanRegistryHostname}/${redHatPid}/${repo}:${version}-ubi`
   outputs['version_as_metadata'] = version.split('.').join('')
 
   return outputs
@@ -92,9 +100,9 @@ const getSanitizedRef = (ref: string): string => {
   }
 }
 
-const sanitize = (str: string) => str.replace(/[^0-9a-z\-\.]/gi, '')
+const sanitize = (str: string): string => str.replace(/[^0-9a-z\-.]/gi, '')
 
-const convertIso = (iso: string): string =>  {
+const convertIso = (iso: string): string => {
   const date = new Date(iso)
 
   return `${date.getUTCFullYear()}.${(date.getUTCMonth() + 1)
@@ -108,8 +116,5 @@ const convertIso = (iso: string): string =>  {
     .padStart(2, '0')}.${date
     .getUTCMinutes()
     .toString()
-    .padStart(2, '0')}.${date
-    .getUTCSeconds()
-    .toString()
-    .padStart(2, '0')}`
+    .padStart(2, '0')}.${date.getUTCSeconds().toString().padStart(2, '0')}`
 }

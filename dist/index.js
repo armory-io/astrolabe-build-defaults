@@ -60,6 +60,7 @@ function run() {
         const outputs = yield variables_1.generateVariables(inputs, {
             resolve: getCommitDate
         });
+        // eslint-disable-next-line github/array-foreach
         Object.entries(outputs).forEach(([key, value]) => {
             core.setOutput(key, value);
         });
@@ -76,6 +77,7 @@ const getCommitDate = () => __awaiter(void 0, void 0, void 0, function* () {
     });
     return commitDateIso.trim();
 });
+// eslint-disable-next-line github/no-then
 run().catch(e => core.setFailed(e));
 
 
@@ -98,12 +100,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.generateVariables = void 0;
 const generateVariables = (inputs, resolver) => __awaiter(void 0, void 0, void 0, function* () {
-    const { artifactoryOrg, artifactoryDockerRepository, dockerRepositoryPrefix, redHatScanRegistryHostname, redHatPid, runId, ref, sha, org, repo, buildOrg, buildRepo, } = inputs;
+    const { artifactoryOrg, artifactoryDockerRepository, dockerRepositoryPrefix, redHatScanRegistryHostname, redHatPid, runId, ref, sha, org, repo, buildOrg, buildRepo } = inputs;
     const outputs = {};
     const artifactoryDockerRegistryHostname = `${artifactoryOrg}-${artifactoryDockerRepository}.jfrog.io`;
-    outputs['org'] = org,
-        outputs['repo'] = repo,
-        outputs['build_number'] = `${sha}:${runId}`;
+    (outputs['org'] = org),
+        (outputs['repo'] = repo),
+        (outputs['build_number'] = `${sha}:${runId}`);
     outputs['build_name'] = `${org}:${repo}`;
     outputs['build_url'] = `https://github.com/${buildOrg}/${buildRepo}/actions/runs/${runId}`;
     outputs['artifactory_docker_registry_hostname'] = artifactoryDockerRegistryHostname;
@@ -127,6 +129,7 @@ const generateVariables = (inputs, resolver) => __awaiter(void 0, void 0, void 0
     outputs['artifactory_image_name'] = `${artifactoryDockerRegistryHostname}/${imageName}`;
     outputs['ubi_image_name'] = `${imageName}-ubi`;
     outputs['ubi_scan_image_name'] = `${redHatScanRegistryHostname}/${redHatPid}/${repo}:${version}-ubi`;
+    outputs['version_as_metadata'] = version.split('.').join('');
     return outputs;
 });
 exports.generateVariables = generateVariables;
@@ -142,7 +145,7 @@ const getSanitizedRef = (ref) => {
         throw new Error(`Invalid git ref: ${ref}`);
     }
 };
-const sanitize = (str) => str.replace(/[^0-9a-z\-\.]/gi, '');
+const sanitize = (str) => str.replace(/[^0-9a-z\-.]/gi, '');
 const convertIso = (iso) => {
     const date = new Date(iso);
     return `${date.getUTCFullYear()}.${(date.getUTCMonth() + 1)
@@ -156,10 +159,7 @@ const convertIso = (iso) => {
         .padStart(2, '0')}.${date
         .getUTCMinutes()
         .toString()
-        .padStart(2, '0')}.${date
-        .getUTCSeconds()
-        .toString()
-        .padStart(2, '0')}`;
+        .padStart(2, '0')}.${date.getUTCSeconds().toString().padStart(2, '0')}`;
 };
 
 

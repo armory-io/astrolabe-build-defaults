@@ -5,6 +5,8 @@ import * as path from 'path'
 // This is the last commit time of the submoduled Kayenta.
 const KAYENTA_COMMIT_TIMESTAMP = '2021.03.20.06.05.28'
 
+const KAYENTA_VERSION_AS_METADATA = '20210320060528master'
+
 test('generates astrolabe build conventions as outputs', async () => {
   const env = {...process.env}
   env['INPUT_ARTIFACTORY_ORG'] = 'armory'
@@ -46,7 +48,10 @@ test('generates astrolabe build conventions as outputs', async () => {
   expect(outputs['ubi_scan_image_name']).toEqual(
     `scan.connect.redhat.com/armory_redhat/kayenta:${KAYENTA_COMMIT_TIMESTAMP}.master-ubi`
   )
-  expect(outputs['red_hat_scan_registry_hostname']).toEqual('scan.connect.redhat.com')
+  expect(outputs['red_hat_scan_registry_hostname']).toEqual(
+    'scan.connect.redhat.com'
+  )
+  expect(outputs['version_as_metadata']).toEqual(KAYENTA_VERSION_AS_METADATA)
 })
 
 const runner = (testDir: string, env: any): string => {
