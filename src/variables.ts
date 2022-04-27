@@ -74,6 +74,7 @@ export const generateVariables = async (
   const sanitizedRef = getSanitizedRef(ref)
   const version = `${versionTimestamp}.${sanitizedRef}`
   const imageName = `${dockerRepositoryPrefix}/${repo}:${version}`
+  const versionSemver = getSemverFromTimestamp(versionTimestamp, sanitizedRef)
 
   outputs['version'] = version
   outputs['image_name'] = imageName
@@ -84,7 +85,7 @@ export const generateVariables = async (
   outputs[
     'ubi_scan_image_name'
   ] = `${redHatScanRegistryHostname}/${redHatPid}/${repo}:${version}-ubi`
-  outputs['version_as_metadata'] = version.split('.').join('')
+  outputs['version_as_semver'] = versionSemver
 
   return outputs
 }
@@ -117,4 +118,23 @@ const convertIso = (iso: string): string => {
     .getUTCMinutes()
     .toString()
     .padStart(2, '0')}.${date.getUTCSeconds().toString().padStart(2, '0')}`
+}
+
+const getSemverFromTimestamp = (tsVersion: string, ref: string): string => {
+  const versionFromRef = getSemverFromRef(ref)
+  const major = tsVersion.split('.')[0].replace(/^0+/, '')
+  const minor = tsVersion.split('.')[1].replace(/^0+/, '')
+  const patch = tsVersion.split('.')[2].replace(/^0+/, '')
+  const metadata = tsVersion.split('.').join('')
+
+  return versionFromRef !== null
+    ? `${versionFromRef}-${metadata}.${ref}`
+    : `${major}.${minor}.${patch}-${metadata}.${ref}`
+}
+
+const getSemverFromRef = (ref: string): string | null => {
+  if (ref.startsWith('release-') && ref.endsWith('.x')) {
+    return ref.substring('release-'.length).replace('x', '0')
+  }
+  return null
 }
