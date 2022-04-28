@@ -5,9 +5,8 @@ import * as path from 'path'
 // This is the last commit time of the submoduled Kayenta.
 const KAYENTA_COMMIT_TIMESTAMP = '2021.03.20.06.05.28'
 
-const KAYENTA_VERSION_AS_SEMVER = '2021.3.20-20210320060528.master'
-const KAYENTA_VERSION_AS_SEMVER_WITH_RELEASE_BRANCH =
-  '1.5.0-20210320060528.release-1.5.x'
+const KAYENTA_VERSION_AS_SEMVER = '2021.3.20-20210320060528'
+const KAYENTA_VERSION_AS_SEMVER_WITH_RELEASE_BRANCH = '1.5.0-20210320060528'
 
 test('generates astrolabe build conventions as outputs', async () => {
   const env = {...process.env}
@@ -73,6 +72,23 @@ test('generates astrolabe build conventions as outputs with release branch', asy
   expect(outputs['version_as_semver']).toEqual(
     KAYENTA_VERSION_AS_SEMVER_WITH_RELEASE_BRANCH
   )
+})
+
+test('generates astrolabe build conventions as outputs with leading zeros in branch name', async () => {
+  const env = {...process.env}
+  env['INPUT_ARTIFACTORY_ORG'] = 'armory'
+  env['INPUT_ARTIFACTORY_DOCKER_REPOSITORY'] = 'docker-local'
+  env['INPUT_DOCKER_REPOSITORY_PREFIX'] = 'armory'
+  env['INPUT_RED_HAT_SCAN_REGISTRY_HOSTNAME'] = 'scan.connect.redhat.com'
+  env['INPUT_RED_HAT_PID'] = 'armory_redhat'
+  env['GITHUB_RUN_ID'] = '123'
+  env['GITHUB_REF'] = 'refs/heads/2021.03.20.06.05.28.release-1.28.x-1651037833'
+  env['GITHUB_REPOSITORY'] = 'spinnaker/kayenta'
+  env['GITHUB_SHA'] = 'my-git-sha'
+
+  const outputs = parse(runner(path.join(__dirname, '/kayenta'), env))
+
+  expect(outputs['version_as_semver']).toEqual(KAYENTA_VERSION_AS_SEMVER)
 })
 
 const runner = (testDir: string, env: any): string => {

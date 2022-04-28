@@ -128,8 +128,8 @@ const getSemverFromTimestamp = (tsVersion: string, ref: string): string => {
   const metadata = tsVersion.split('.').join('')
 
   return versionFromRef !== null
-    ? `${versionFromRef}-${metadata}.${ref}`
-    : `${major}.${minor}.${patch}-${metadata}.${ref}`
+    ? `${versionFromRef}-${metadata}`
+    : `${major}.${minor}.${patch}-${metadata}`
 }
 
 const getSemverFromRef = (ref: string): string | null => {
