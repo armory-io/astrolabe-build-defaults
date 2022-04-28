@@ -169,8 +169,8 @@ const getSemverFromTimestamp = (tsVersion, ref) => {
     const patch = tsVersion.split('.')[2].replace(/^0+/, '');
     const metadata = tsVersion.split('.').join('');
     return versionFromRef !== null
-        ? `${versionFromRef}-${metadata}.${ref}`
-        : `${major}.${minor}.${patch}-${metadata}.${ref}`;
+        ? `${versionFromRef}-${metadata}`
+        : `${major}.${minor}.${patch}-${metadata}`;
 };
 const getSemverFromRef = (ref) => {
     if (ref.startsWith('release-') && ref.endsWith('.x')) {
