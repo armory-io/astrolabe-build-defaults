@@ -75,7 +75,6 @@ export const generateVariables = async (
   const version = `${versionTimestamp}.${sanitizedRef}`
   const imageName = `${dockerRepositoryPrefix}/${repo}:${version}`
   const versionSemver = getSemverFromTimestamp(versionTimestamp, sanitizedRef)
-  const semverFromVersion = getVersionFromTimestamp(versionTimestamp)
 
   outputs['version'] = version
   outputs['image_name'] = imageName
@@ -87,7 +86,6 @@ export const generateVariables = async (
     'ubi_scan_image_name'
   ] = `${redHatScanRegistryHostname}/${redHatPid}/${repo}:${version}-ubi`
   outputs['version_as_semver'] = versionSemver
-  outputs['oss_version'] = `${semverFromVersion}.${sanitizedRef}`
 
   return outputs
 }
@@ -124,10 +122,14 @@ const convertIso = (iso: string): string => {
 
 const getSemverFromTimestamp = (tsVersion: string, ref: string): string => {
   const versionFromRef = getSemverFromRef(ref)
-  const semver = getVersionFromTimestamp(tsVersion)
-  const metadata = getTimestampAsMetadata(tsVersion)
+  const major = tsVersion.split('.')[0].replace(/^0+/, '')
+  const minor = tsVersion.split('.')[1].replace(/^0+/, '')
+  const patch = tsVersion.split('.')[2].replace(/^0+/, '')
+  const metadata = tsVersion.split('.').join('')
 
-  return versionFromRef !== null ? `${versionFromRef}-${metadata}` : semver
+  return versionFromRef !== null
+    ? `${versionFromRef}-${metadata}`
+    : `${major}.${minor}.${patch}-${metadata}`
 }
 
 const getSemverFromRef = (ref: string): string | null => {
@@ -135,17 +137,4 @@ const getSemverFromRef = (ref: string): string | null => {
     return ref.substring('release-'.length).replace('x', '0')
   }
   return null
-}
-
-const getVersionFromTimestamp = (tsVersion: string): string => {
-  const major = tsVersion.split('.')[0].replace(/^0+/, '')
-  const minor = tsVersion.split('.')[1].replace(/^0+/, '')
-  const patch = tsVersion.split('.')[2].replace(/^0+/, '')
-  const metadata = getTimestampAsMetadata(tsVersion)
-
-  return `${major}.${minor}.${patch}-${metadata}`
-}
-
-const getTimestampAsMetadata = (tsVersion: string): string => {
-  return tsVersion.split('.').join('')
 }

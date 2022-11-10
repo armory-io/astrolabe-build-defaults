@@ -53,7 +53,6 @@ test('generates astrolabe build conventions as outputs', async () => {
     'scan.connect.redhat.com'
   )
   expect(outputs['version_as_semver']).toEqual(KAYENTA_VERSION_AS_SEMVER)
-  expect(outputs['oss_version']).toEqual(`${KAYENTA_VERSION_AS_SEMVER}.master`)
 })
 
 test('generates astrolabe build conventions as outputs with release branch', async () => {
@@ -73,9 +72,6 @@ test('generates astrolabe build conventions as outputs with release branch', asy
   expect(outputs['version_as_semver']).toEqual(
     KAYENTA_VERSION_AS_SEMVER_WITH_RELEASE_BRANCH
   )
-  expect(outputs['oss_version']).toEqual(
-    `${KAYENTA_VERSION_AS_SEMVER}.release-1.5.x`
-  )
 })
 
 test('generates astrolabe build conventions as outputs with leading zeros in branch name', async () => {
@@ -93,9 +89,6 @@ test('generates astrolabe build conventions as outputs with leading zeros in bra
   const outputs = parse(runner(path.join(__dirname, '/kayenta'), env))
 
   expect(outputs['version_as_semver']).toEqual(KAYENTA_VERSION_AS_SEMVER)
-  expect(outputs['oss_version']).toEqual(
-    `${KAYENTA_VERSION_AS_SEMVER}.2021.03.20.06.05.28.release-1.28.x-1651037833`
-  )
 })
 
 const runner = (testDir: string, env: any): string => {
