@@ -3,10 +3,10 @@ import * as cp from 'child_process'
 import * as path from 'path'
 
 // This is the last commit time of the submoduled Kayenta.
-const KAYENTA_COMMIT_TIMESTAMP = '2022.11.10.21.43.52'
+const KAYENTA_COMMIT_TIMESTAMP = '2021.03.20.06.05.28'
 
-const KAYENTA_VERSION_AS_SEMVER = '2022.11.10-20221110214352'
-const KAYENTA_VERSION_AS_SEMVER_WITH_RELEASE_BRANCH = '1.5.0-20221110214352'
+const KAYENTA_VERSION_AS_SEMVER = '2021.3.20-20210320060528'
+const KAYENTA_VERSION_AS_SEMVER_WITH_RELEASE_BRANCH = '1.5.0-20210320060528'
 
 test('generates astrolabe build conventions as outputs', async () => {
   const env = {...process.env}
